@@ -37,11 +37,14 @@
             </div>
         </div>
         <el-table
-                :data="tableData"
-                v-loading="loading"
-                sort-method="false"
-                @sort-change="sortChange"
-                style="width: 100%">
+            v-bind="$attrs"
+            v-on="$listeners"
+            :data="tableData"
+            v-loading="loading"
+            sort-method="false"
+            @sort-change="sortChange"
+            style="width: 100%"
+        >
             <el-table-column
                     v-for="item in columnsCur"
                     v-if="item.show != false"
@@ -81,7 +84,8 @@
     import Http from '../utils/http';
 
     export default {
-        name: "index",
+        name: "EpTable",
+        inheritAttrs: false,
         props: {
             request: Object,
             responseFormat: Function,

@@ -5,7 +5,10 @@ import 'element-ui/lib/theme-chalk/index.css';
 
 import Components from './components/components'
 import App from './App.vue';
+
 import Table from './example/table';
+
+import Select from './example/select';
 
 Vue.use(ElementUI);
 Vue.use(VueRouter);
@@ -15,6 +18,8 @@ var myRouter = new VueRouter({
     mode: "history",
     routes: [
         {path: "", component: Table},
+        {path: "/table", component: Table},
+        {path: "/select", component: Select},
     ]
 });
 

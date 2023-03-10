@@ -1,6 +1,6 @@
 # element-ui组件封装
 
-基于element-ui，封装一些常用的组件，比如分页表格、分页下拉框，以到达开箱即用的目的。
+基于element-ui，封装一些常用的组件，比如分页表格、分页下拉框；下拉框赖加载，以到达开箱即用的目的。
 
 ## 安装
 
@@ -44,8 +44,8 @@ table.vue
                 request: {
                     url: "/files/get",
                     method: "GET",
-					params: null,
-					data: null
+                    params: null,
+                    data: null
                 },
                 columns: [
                     {
@@ -60,7 +60,7 @@ table.vue
                         width: "400",
                         sortable: true,
                     },
-					{
+                    {
                         prop: "status",
                         label: "状态",
                         width: "100",
@@ -116,6 +116,45 @@ table.vue
 table预览
 
 ![image](https://github.com/liangalien/element-ui-components-pro/blob/main/images/table1.png)
+
+
+
+select.vue
+
+```javascript
+<template>
+    <ep-select multiple v-model="value" :request="request" :responseFormat="responseFormat" @change="change"/>
+</template>
+
+<script>
+    export default {
+        data() {
+            return {
+                value: null,
+                request: {
+                    url: "/table.json",
+                    method: "GET"
+                },
+                responseFormat: resp => {
+                    return {
+                        rows: resp.body.rows.map(row => {
+                            return {
+                                value: row.id,
+                                label: row.name,
+                                render: <span>{row.name}<el-tag style="margin-left: 10px" type={row.status == "正常" ? "success" : "warning"}>{row.status}</el-tag></span>
+                            }
+                        }),
+                        total: resp.body.total
+                    }
+                }
+            }
+        }
+    }
+</script>
+```
+select预览
+
+![image](https://github.com/liangalien/element-ui-components-pro/blob/main/images/select1.png)
 
 ## 开发
 
