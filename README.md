@@ -1,16 +1,16 @@
-# element-ui×é¼ş·â×°
+# element-uiç»„ä»¶å°è£…
 
-»ùÓÚelement-ui£¬·â×°Ò»Ğ©³£ÓÃµÄ×é¼ş£¬±ÈÈç·ÖÒ³±í¸ñ¡¢·ÖÒ³ÏÂÀ­¿ò£¬ÒÔµ½´ï¿ªÏä¼´ÓÃµÄÄ¿µÄ¡£
+åŸºäºelement-uiï¼Œå°è£…ä¸€äº›å¸¸ç”¨çš„ç»„ä»¶ï¼Œæ¯”å¦‚åˆ†é¡µè¡¨æ ¼ã€åˆ†é¡µä¸‹æ‹‰æ¡†ï¼Œä»¥åˆ°è¾¾å¼€ç®±å³ç”¨çš„ç›®çš„ã€‚
 
-## °²×°
+## å®‰è£…
 
-Ç°ÌáÊÇÒÑ°²×°ÁËelement-ui£¬°²×°½Ì³Ì¿É¼û£º<https://element.eleme.io/#/zh-CN/component/installation>
+å‰ææ˜¯å·²å®‰è£…äº†element-uiï¼Œå®‰è£…æ•™ç¨‹å¯è§ï¼š<https://element.eleme.io/#/zh-CN/component/installation>
 
 ```bash
 npm install element-ui-components-pro
 ```
 
-## Ê¹ÓÃ
+## ä½¿ç”¨
 
 main.js
 
@@ -56,24 +56,24 @@ table.vue
                     },
                     {
                         prop: "name",
-                        label: "ÎÄ¼şÃû³Æ",
+                        label: "æ–‡ä»¶åç§°",
                         width: "400",
                         sortable: true,
                     },
 					{
                         prop: "status",
-                        label: "×´Ì¬",
+                        label: "çŠ¶æ€",
                         width: "100",
                         sortable: true,
                         render: (h, {value}) => {
-                            if (value == "Õı³£")
+                            if (value == "æ­£å¸¸")
                                 return <el-tag type="success" effect="plain">{value}</el-tag>;
                             else
                                 return <el-tag  type="warning" effect="plain">{value}</el-tag>;
                         }
                     },
                     {
-                        label: "²Ù×÷",
+                        label: "æ“ä½œ",
                         width: "100",
                         render: (h, {value, row, scope, index}) => {
                             return <el-popover
@@ -81,15 +81,15 @@ table.vue
                                 width="160"
                                 ref={"deletePop" + index}
                             >
-                                <p>È·¶¨É¾³ı£¿</p>
+                                <p>ç¡®å®šåˆ é™¤ï¼Ÿ</p>
                                 <div style="text-align: right; margin: 0">
                                     <el-button size="mini" type="text" onClick={(e) =>
                                     {
                                         scope._self.$refs["deletePop" + index].showPopper = false;
-                                    }}>È¡Ïû</el-button>
-                                    <el-button type="primary" size="mini" onClick={() => this.deleteRow(row.id, scope._self.$refs["deletePop" + index])}>È·¶¨</el-button>
+                                    }}>å–æ¶ˆ</el-button>
+                                    <el-button type="primary" size="mini" onClick={() => this.deleteRow(row.id, scope._self.$refs["deletePop" + index])}>ç¡®å®š</el-button>
                                 </div>
-                                <a href="javascript:void(0)" slot="reference">É¾³ı</a>
+                                <a href="javascript:void(0)" slot="reference">åˆ é™¤</a>
                             </el-popover>
                         }
                     }
@@ -113,11 +113,11 @@ table.vue
 </script>
 ```
 
-tableÔ¤ÀÀ
+tableé¢„è§ˆ
 
-![image](https://github.com/liangalien/element-ui-components-pro/blob/master/images/table1.png)
+![image](https://github.com/liangalien/element-ui-components-pro/blob/main/images/table1.png)
 
-## ¿ª·¢
+## å¼€å‘
 
 ```bash
 npm i
