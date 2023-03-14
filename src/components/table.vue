@@ -264,11 +264,13 @@
         line-height: 29px !important;
     }
 
-    .ep-table .el-divider--horizontal {
-        margin: 5px 0 !important;
-    }
-
     .ep-table .el-table-column--selection .cell {
         padding: 0 2px !important;
+    }
+</style>
+
+<style scope>
+    .el-divider--horizontal {
+        margin: 5px 0 !important;
     }
 </style>
