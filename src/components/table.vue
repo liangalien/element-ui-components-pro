@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="ep-table">
         <div class="table-top">
             <div class="table-top-left">
                 <slot name="topLeft"></slot>
@@ -15,7 +15,7 @@
                 <slot name="topRight"></slot>
                 <el-button v-if="extra && extra.indexOf('refresh') != -1" type="text" icon="el-icon-refresh-left" @click="getTableData()"></el-button>
                 <el-popover
-                    trigger="click"
+                        trigger="click"
                 >
                     <el-checkbox
                             v-model="columnsCheckedAll"
@@ -37,31 +37,28 @@
             </div>
         </div>
         <el-table
-            v-bind="$attrs"
-            v-on="$listeners"
-            :data="tableData"
-            v-loading="loading"
-            sort-method="false"
-            @sort-change="sortChange"
-            style="width: 100%"
+                v-bind="$attrs"
+                v-on="$listeners"
+                :data="tableData"
+                v-loading="loading"
+                sort-method="false"
+                @sort-change="sortChange"
+                style="width: 100%"
         >
-            <el-table-column
-                    v-for="item in columnsCur"
-                    v-if="item.show != false"
-                    :key="item.prop"
-                    :prop="item.prop"
-                    :label="item.label"
-                    :width="item.width"
-                    :align="item.align"
-                    :sortable="item.sortable ? 'custom' : false"
-            >
-                <template slot-scope="scope">
-                    <ep-render v-if="item.render" :scope="scope" :row="scope.row" :render="item.render" :value="scope.row[item.prop]"></ep-render>
-
-                    <div v-else>{{scope.row[item.prop]}}</div>
-                </template>
-            </el-table-column>
-
+            <template v-for="item in columnsCur" v-if="item.show != false">
+                <el-table-column
+                        v-if="item.render"
+                        v-bind="{sortable: (item.sortable ? 'custom' : false), key: item.prop, ...item}"
+                >
+                    <template  slot-scope="scope">
+                        <ep-render :scope="scope" :row="scope.row" :render="item.render" :value="scope.row[item.prop]"></ep-render>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                        v-else
+                        v-bind="{sortable: (item.sortable ? 'custom' : false), key: item.prop, ...item}"
+                ></el-table-column>
+            </template>
         </el-table>
 
         <div class="table-bottom-right">
@@ -92,16 +89,18 @@
             columns: Array,
             pagination: {
                 type: Object,
-                default: {
-                    total: 0,
-                    pageSize: 10,
-                    pageSizes: [10, 50, 100, 200],
-                    pageNo: 1,
-                    layout: "total, prev, pager, next, sizes"
+                default() {
+                    return {
+                        total: 0,
+                        pageSize: 10,
+                        pageSizes: [10, 50, 100, 200],
+                        pageNo: 1,
+                        layout: "total, prev, pager, next, sizes"
+                    }
                 }
             },
-            searchField: {type: [String, Boolean], default: "search"},
-            extra: {type: Array, default: ["refresh", "columns"]}
+            searchField: {type: [String, Boolean], default() {return "search"}},
+            extra: {type: Array, default() {return ["refresh", "columns"]}}
         },
         data() {
             return {
@@ -152,6 +151,14 @@
                         }
                         this.loading = false;
                     });
+            },
+            refresh: function () { //刷新，供父组件调用
+                this.getTableData();
+            },
+            reset: function () { //重置，从第一页开始显示
+                this.pagination.pageNo = 1;
+                this.pagination.total = 0;
+                this.refresh();
             },
             pageChange: function(pageNo) {
                 this.pagination.pageNo = pageNo;
@@ -207,57 +214,61 @@
     }
 </script>
 
-<style scoped>
-    .table-top {
+<style>
+    .ep-table .table-top {
         margin-bottom: 10px;
     }
 
-    .table-top-left {
+    .ep-table .table-top-left {
         float: left;
         display: flex;
     }
 
-    .table-top-left .input-with-select {
+    .ep-table .table-top-left .input-with-select {
         width: 300px;
     }
 
-    .table-top-left * {
+    .ep-table .table-top-left > * {
         margin-right: 15px;
     }
 
-    .table-top-right {
+    .ep-table .table-top-right {
         float: right;
         display: flex;
         font-size:20px;
     }
 
-    .table-top-right button{
+    .ep-table .table-top-right button{
         font-size:20px;
     }
 
-    .table-top-right > * {
+    .ep-table .table-top-right > * {
         margin-right: 5px;
     }
 
-    .table-bottom-right {
+    .ep-table .table-bottom-right {
         text-align: right;
         margin-top: 20px;
     }
 
-    .table-bottom-right .el-pagination {
+    .ep-table .table-bottom-right .el-pagination {
         padding: 0;
     }
 
-    .el-popover {
+    .ep-table .el-popover {
         margin: 0 !important;
     }
 
-    .el-select input {
-        height: 32px !important;
-        line-height: 32px !important;
+    .ep-table .el-pagination__sizes .el-input .el-input__inner {
+        height: 29px !important;
+        line-height: 29px !important;
     }
 
-    .el-divider--horizontal {
+    .ep-table .el-divider--horizontal {
         margin: 5px 0 !important;
+    }
+
+    .ep-table .el-table-column--selection .cell {
+        padding: 0 2px !important;
     }
 </style>
