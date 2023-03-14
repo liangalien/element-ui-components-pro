@@ -13,7 +13,8 @@
 
             <div class="table-top-right">
                 <slot name="topRight"></slot>
-                <el-button v-if="extra && extra.indexOf('refresh') != -1" type="text" icon="el-icon-refresh-left" @click="getTableData()"></el-button>
+                <el-button v-if="extra && extra.indexOf('refresh') != -1" type="text" icon="el-icon-refresh-left"
+                           @click="getTableData()"></el-button>
                 <el-popover
                         trigger="click"
                 >
@@ -21,18 +22,20 @@
                             v-model="columnsCheckedAll"
                             :indeterminate="columnsCheckedIndeterminate"
                             @change="columnsCheckAllChange"
-                    >全选</el-checkbox>
+                    >全选
+                    </el-checkbox>
                     <el-divider style="margin: 5px 0"></el-divider>
                     <el-checkbox-group
                             v-model="columnsChecked"
                             @change="columnsCheckChange"
                     >
-                        <div v-for="column in columnsCur">
+                        <div v-for="column in columnsCur" v-if="column.prop">
                             <el-checkbox :label="column.prop" :key="column.prop">{{column.label}}</el-checkbox>
                         </div>
 
                     </el-checkbox-group>
-                    <el-button  v-if="extra && extra.indexOf('columns') != -1" slot="reference" type="text" icon="el-icon-setting"></el-button>
+                    <el-button v-if="extra && extra.indexOf('columns') != -1" slot="reference" type="text"
+                               icon="el-icon-setting"></el-button>
                 </el-popover>
             </div>
         </div>
@@ -50,8 +53,9 @@
                         v-if="item.render"
                         v-bind="{sortable: (item.sortable ? 'custom' : false), key: item.prop, ...item}"
                 >
-                    <template  slot-scope="scope">
-                        <ep-render :scope="scope" :row="scope.row" :render="item.render" :value="scope.row[item.prop]"></ep-render>
+                    <template slot-scope="scope">
+                        <ep-render :scope="scope" :row="scope.row" :render="item.render"
+                                   :value="scope.row[item.prop]"></ep-render>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -99,8 +103,16 @@
                     }
                 }
             },
-            searchField: {type: [String, Boolean], default() {return "search"}},
-            extra: {type: Array, default() {return ["refresh", "columns"]}}
+            searchField: {
+                type: [String, Boolean], default() {
+                    return "search"
+                }
+            },
+            extra: {
+                type: Array, default() {
+                    return ["refresh", "columns"]
+                }
+            }
         },
         data() {
             return {
@@ -116,7 +128,7 @@
             }
         },
         methods: {
-            getTableData: function() {
+            getTableData: function () {
                 if (!this.request) return;
 
                 var url = this.request.url;
@@ -160,15 +172,15 @@
                 this.pagination.total = 0;
                 this.refresh();
             },
-            pageChange: function(pageNo) {
+            pageChange: function (pageNo) {
                 this.pagination.pageNo = pageNo;
                 this.getTableData();
             },
-            sizeChange: function(pageSize) {
+            sizeChange: function (pageSize) {
                 this.pagination.pageSize = pageSize;
                 this.getTableData();
             },
-            sortChange: function(sortable) {
+            sortChange: function (sortable) {
                 var sortBy = {[sortable.prop]: sortable.order};
                 this.sortBy = (this.request.method == "GET" || !this.request.method) && JSON.stringify(sortBy) || sortBy;
                 this.getTableData();
@@ -189,7 +201,7 @@
 
                 this.setColumnShow();
             },
-            setColumnShow: function (value=null) {
+            setColumnShow: function (value = null) {
                 this.columnsCur = this.columnsCur.map(column => {
                     return {
                         ...column,
@@ -235,11 +247,11 @@
     .ep-table .table-top-right {
         float: right;
         display: flex;
-        font-size:20px;
+        font-size: 20px;
     }
 
-    .ep-table .table-top-right button{
-        font-size:20px;
+    .ep-table .table-top-right button {
+        font-size: 20px;
     }
 
     .ep-table .table-top-right > * {

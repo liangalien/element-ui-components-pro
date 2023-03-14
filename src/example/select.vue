@@ -18,7 +18,7 @@
                             return {
                                 value: row.id,
                                 label: row.name,
-                                render: <span>{row.name}<el-tag style="margin-left: 10px" type={row.status == "正常" ? "success" : "warning"}>{row.status}</el-tag></span>
+                                render: <span>{row.name}<el-tag  size="small" style="margin-left: 10px" type={row.status == "正常" ? "success" : "warning"}>{row.status}</el-tag></span>
                             }
                         }),
                         total: resp.body.total
