@@ -33,6 +33,7 @@
                         prop: "name",
                         label: "文件名称",
                         sortable: true,
+                        ellipsis: true,
                     },
                     {
                         prop: "status",

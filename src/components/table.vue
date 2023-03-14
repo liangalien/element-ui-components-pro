@@ -52,6 +52,7 @@
                 <el-table-column
                         v-if="item.render"
                         v-bind="{sortable: (item.sortable ? 'custom' : false), key: item.prop, ...item}"
+                        :class-name="item.ellipsis && 'cell-ellipsis'"
                 >
                     <template slot-scope="scope">
                         <ep-render :scope="scope" :row="scope.row" :render="item.render"
@@ -61,6 +62,7 @@
                 <el-table-column
                         v-else
                         v-bind="{sortable: (item.sortable ? 'custom' : false), key: item.prop, ...item}"
+                        :class-name="item.ellipsis && 'cell-ellipsis'"
                 ></el-table-column>
             </template>
         </el-table>
@@ -201,7 +203,7 @@
 
                 this.setColumnShow();
             },
-            setColumnShow: function (value = null) {
+            setColumnShow: function (value=null) {
                 this.columnsCur = this.columnsCur.map(column => {
                     return {
                         ...column,
@@ -279,6 +281,19 @@
     .ep-table .el-table-column--selection .cell {
         padding: 0 2px !important;
     }
+
+    .ep-table .cell-ellipsis .cell {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .ep-table .cell-ellipsis .cell:hover {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: normal;
+    }
+
 </style>
 
 <style scope>
