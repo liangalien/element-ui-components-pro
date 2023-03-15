@@ -3,7 +3,6 @@
         :columns="columns"
         :request="request"
         :responseFormat="responseFormat"
-        :pagination="pagination"
     >
         <template #topLeft>
             <el-button type="primary">上传</el-button>
@@ -12,12 +11,22 @@
 </template>
 
 <script>
+    import Http from "../utils/http";
+
     export default {
         data() {
             return {
-                request: {
+                request: { //request是一个对象，内容是axios参数
                     url: "/table.json",
                 },
+                /*request(option) { //request是一个函数，返回一个Promise对象
+                    //option是页面搜索、翻页、排序内容
+                    return new Promise(resolve => {
+                        Http.easyRequest("/table.json", "GET", option, null, resp => {
+                            resolve(resp); //注意：这里返回的内容，如果有responseFormat，仍然会调用responseFormat输出表格数据
+                        });
+                    });
+                },*/
                 columns: [
                     {
                         type: "selection",

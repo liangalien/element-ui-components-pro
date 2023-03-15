@@ -90,7 +90,7 @@
         name: "EpTable",
         inheritAttrs: false,
         props: {
-            request: Object,
+            request: [Object, Function],
             responseFormat: Function,
             columns: Array,
             pagination: {
@@ -130,41 +130,48 @@
             }
         },
         methods: {
-            getTableData: function () {
-                if (!this.request) return;
-
-                var url = this.request.url;
-                var method = this.request.method;
-                var params = this.request.params;
-                var data = this.request.data;
-
-                //自带属性，如翻页、排序、搜索放在哪个字段（params/data）。
-                var optionField = this.request.optionField;
-                var option = {
-                    pageNo: this.pagination.pageNo,
-                    pageSize: this.pagination.pageSize,
-                    [this.searchField]: this.search,
-                    sortBy: this.sortBy
-                };
-
-                if (optionField == "data" || (!optionField && (method || "GET").toUpperCase() == "POST")) data = {...option, ...data};
-                else params = {...option, ...params};
-
-                var responseFormat = this.responseFormat;
-
-                this.loading = true;
-                Http.easyRequest(url, method, params, data,
-                    final => {
-                        if (!responseFormat) {
-                            this.tableData = final.rows;
-                            this.pagination.total = final.total == undefined && final.rows.length || final.total || 0;
+            getTableData: function() {
+                if (this.request instanceof Function) {
+                    this.loading = true;
+                    this.request(this.getOption()).then(resp => {
+                        if (!this.responseFormat) {
+                            this.tableData = resp.rows;
+                            this.pagination.total = resp.total == undefined && resp.rows.length || resp.total || 0;
                         } else {
-                            var {rows, total} = responseFormat(final);
+                            var {rows, total} = this.responseFormat(resp);
                             this.tableData = rows;
                             this.pagination.total = total;
                         }
                         this.loading = false;
                     });
+                }
+
+                else if (this.request instanceof Object) {
+                    var url = this.request.url;
+                    var method = this.request.method;
+                    var params = this.request.params;
+                    var data = this.request.data;
+
+                    //自带属性，如翻页、排序、搜索放在哪个字段（params/data）。
+                    var optionField = this.request.optionField;
+
+                    if (optionField == "data" || (!optionField && (method || "GET").toUpperCase() == "POST")) data = {...this.getOption(), ...data};
+                    else params = {...this.getOption(), ...params};
+
+                    this.loading = true;
+                    Http.easyRequest(url, method, params, data,
+                        final => {
+                            if (!this.responseFormat) {
+                                this.tableData = final.rows;
+                                this.pagination.total = final.total == undefined && final.rows.length || final.total || 0;
+                            } else {
+                                var {rows, total} = this.responseFormat(final);
+                                this.tableData = rows;
+                                this.pagination.total = total;
+                            }
+                            this.loading = false;
+                        });
+                }
             },
             refresh: function () { //刷新，供父组件调用
                 this.getTableData();
@@ -174,15 +181,23 @@
                 this.pagination.total = 0;
                 this.refresh();
             },
-            pageChange: function (pageNo) {
+            getOption: function () {
+                return {
+                    pageNo: this.pagination.pageNo,
+                    pageSize: this.pagination.pageSize,
+                    [this.searchField]: this.search,
+                    sortBy: this.sortBy
+                };
+            },
+            pageChange: function(pageNo) {
                 this.pagination.pageNo = pageNo;
                 this.getTableData();
             },
-            sizeChange: function (pageSize) {
+            sizeChange: function(pageSize) {
                 this.pagination.pageSize = pageSize;
                 this.getTableData();
             },
-            sortChange: function (sortable) {
+            sortChange: function(sortable) {
                 var sortBy = {[sortable.prop]: sortable.order};
                 this.sortBy = (this.request.method == "GET" || !this.request.method) && JSON.stringify(sortBy) || sortBy;
                 this.getTableData();
