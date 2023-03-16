@@ -182,12 +182,14 @@
                 this.refresh();
             },
             getOption: function () {
-                return {
+                var options = {
                     pageNo: this.pagination.pageNo,
                     pageSize: this.pagination.pageSize,
-                    [this.searchField]: this.search,
                     sortBy: this.sortBy
-                };
+                }
+                if (this.searchField != false) options[this.searchField] = this.search;
+                else options = {...options, ...this.search}
+                return options;
             },
             pageChange: function(pageNo) {
                 this.pagination.pageNo = pageNo;
@@ -237,7 +239,7 @@
         },
         watch: {
             search: function () {
-                this.getTableData();
+                if (this.searchField != false) this.getTableData();
             },
         }
     }
@@ -286,11 +288,6 @@
 
     .ep-table .el-popover {
         margin: 0 !important;
-    }
-
-    .ep-table .el-pagination__sizes .el-input .el-input__inner {
-        height: 29px !important;
-        line-height: 29px !important;
     }
 
     .ep-table .el-table-column--selection .cell {

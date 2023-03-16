@@ -6,7 +6,7 @@
     "url": "https://github.com/liangalien"
   },
   "homepage": "https://github.com/liangalien/element-ui-components-pro",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "private": false,
   "main": "src/components/components.js",
   "scripts": {
