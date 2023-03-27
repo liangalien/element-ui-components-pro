@@ -114,6 +114,12 @@
                 type: Array, default() {
                     return ["refresh", "columns"]
                 }
+            },
+            autoLoading: {
+                type: Boolean,
+                default() {
+                  return true;
+                }
             }
         },
         data() {
@@ -235,7 +241,7 @@
             this.columnsChecked = this.columnsCur.filter(column => column.show != false).map(column => column.prop);
 
             this.columnsCheckedAll = this.columnsAll.length === this.columnsChecked.length;
-            this.getTableData();
+            if (this.autoLoading) this.getTableData();
         },
         watch: {
             search: function () {
