@@ -2,13 +2,13 @@
     <div class="ep-table">
         <div class="table-top">
             <div class="table-top-left">
-                <slot name="topLeft"></slot>
                 <el-input
                         v-if="searchField != false"
                         placeholder="关键字查询"
                         v-model="search">
                     <i slot="prefix" class="el-input__icon el-icon-search"></i>
                 </el-input>
+                <slot name="topLeft"></slot>
             </div>
 
             <div class="table-top-right">
@@ -118,7 +118,7 @@
             autoLoading: {
                 type: Boolean,
                 default() {
-                  return true;
+                    return true;
                 }
             }
         },

@@ -54,10 +54,22 @@ module.exports = (options = {}) => ({
     ],
     devtool: 'inline-source-map',
     devServer: {
-        port: 8080,
+        port: 8081,
         host: "127.0.0.1",
         //contentBase: path.join(__dirname, 'dist'),
         historyApiFallback: true,
         hot: true,
+        proxy: {
+            "/common": {
+                target: 'http://127.0.0.1:8000',
+                changeOrigin: true,
+                secure: true,
+                bypass: function (req, res, proxyOptions) {
+                     if (req._parsedUrl.pathname == "/common/files") {
+                        return "/common/files";
+                    }
+                },
+            },
+        }
     },
 })
