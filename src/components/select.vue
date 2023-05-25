@@ -50,7 +50,7 @@
     export default {
         inheritAttrs: false,
         props: {
-            request: Object,
+            request: [Object, Function],
             responseFormat: Function,
             pagination: {
                 type: Object,
@@ -73,41 +73,52 @@
                 options: [],
                 search: null,
                 getSelectData: function () {
-                    if (!this.request) return;
+                    if (this.request instanceof Function) {
+                        this.loading = this.pagination.pageNo == 1;
+                        this.request(this.getOption()).then(resp => {
+                            if (!this.responseFormat) {
+                                var rows = resp.rows;
+                                var total  = resp.total == undefined && resp.rows.length || resp.total || 0;
+                            } else {
+                                var {rows, total} = this.responseFormat(resp);
+                            }
+                            this.options = this.options.concat(rows);
+                            this.pagination.total = total;
+                            this.loading = false;
+                        });
+                    }
 
-                    var url = this.request.url;
-                    var method = this.request.method;
-                    var params = this.request.params;
-                    var data = this.request.data;
+                    else if (this.request instanceof Object) {
+                        var url = this.request.url;
+                        var method = this.request.method;
+                        var params = this.request.params;
+                        var data = this.request.data;
 
-                    //自带属性，如搜索放在哪个请求字段（params/data）。
-                    var optionField = this.request.optionField;
-                    var option = {
-                        pageNo: this.pagination.pageNo,
-                        pageSize: this.pagination.pageSize,
-                        [this.searchField]: this.search
-                    };
+                        //自带属性，如搜索放在哪个请求字段（params/data）。
+                        var optionField = this.request.optionField;
+                        var option = this.getOption()
 
-                    if (optionField == "data" || (!optionField && (method || "GET").toUpperCase() == "POST"))
-                        data = {...option, ...data};
-                    else
-                        params = {...option, ...params};
+                        if (optionField == "data" || (!optionField && (method || "GET").toUpperCase() == "POST"))
+                            data = {...option, ...data};
+                        else
+                            params = {...option, ...params};
 
-                    var responseFormat = this.responseFormat;
-                    this.loading = this.pagination.pageNo == 1; //第一页加载的时候，才会显示loading
-                    Http.easyRequest(url, method, params, data, final => {
-                        if (!responseFormat) {
-                            var rows = final.rows || [];
-                            var total = final.total == undefined && final.rows.length || final.total || 0;
+                        var responseFormat = this.responseFormat;
+                        this.loading = this.pagination.pageNo == 1; //第一页加载的时候，才会显示loading
+                        Http.easyRequest(url, method, params, data, final => {
+                            if (!responseFormat) {
+                                var rows = final.rows || [];
+                                var total = final.total == undefined && final.rows.length || final.total || 0;
 
-                        } else {
-                            var {rows, total} = responseFormat(final);
-                        }
+                            } else {
+                                var {rows, total} = responseFormat(final);
+                            }
 
-                        this.options = this.options.concat(rows);
-                        this.pagination.total = total;
-                        this.loading = false;
-                    });
+                            this.options = this.options.concat(rows);
+                            this.pagination.total = total;
+                            this.loading = false;
+                        });
+                    }
                 },
             }
         },
@@ -150,7 +161,7 @@
                 this.options = [];
                 this.pagination.pageNo = 1;
 
-                let scroll = this.$refs["ep-select"].$el.querySelector(".el-scrollbar__wrap");
+                let scroll = document.querySelector(".el-select-dropdown:has(.el-tabs) .el-scrollbar__wrap");
                 scroll.scrollTop = 0; //滚动到顶部
             },
             getCurSelected() {
@@ -172,7 +183,16 @@
                 } else {
                     return null;
                 }
-            }
+            },
+            getOption: function () {
+                var options = {
+                    pageNo: this.pagination.pageNo,
+                    pageSize: this.pagination.pageSize
+                }
+                if (this.searchField != false) options[this.searchField] = this.search;
+                else options = {...options, ...this.search}
+                return options;
+            },
         },
         mounted() {
             this.scrollBottom();
@@ -181,26 +201,26 @@
 </script>
 
 <style>
-    .ep-select .el-select-dropdown__list:has(.el-tabs) {
+    .el-select-dropdown:has(.el-tabs) .el-select-dropdown__list {
         padding: 0;
     }
 
-    .ep-select .el-tabs__item {
+    .el-select-dropdown:has(.el-tabs) .el-tabs__item {
         padding: 8px 20px;
     }
 
-    .ep-select .el-tab-pane {
+    .el-select-dropdown:has(.el-tabs) .el-tab-pane {
         height: auto;
     }
 
-    .ep-select .el-tabs__header {
+    .el-select-dropdown:has(.el-tabs) .el-tabs__header {
         position: absolute;
         background-color: white;
         width: 100%;
         z-index: 2;
     }
 
-    .ep-select:has(.el-tabs) .el-select-dropdown__item:first-child {
+    .el-select-dropdown:has(.el-tabs) .el-select-dropdown__item:first-child {
         margin-top: 37px;
     }
 
@@ -208,11 +228,11 @@
         text-align: center;
     }
 
-    .ep-select:has(.ep-select-empty) .el-select-dropdown__list {
+    .el-select-dropdown:has(.ep-select-empty) .el-select-dropdown__list {
         overflow: auto;
     }
 
-    .ep-select .el-tabs__nav {
+    .el-select-dropdown:has(.el-tabs) .el-tabs__nav {
         border-top: none !important;
         border-left: none !important;
     }
