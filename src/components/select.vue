@@ -20,7 +20,7 @@
                                 <ep-render v-if="item.render" :render="item.render"></ep-render>
                             </el-option>
                         </div>
-                        <el-option v-else :disabled="true">
+                        <el-option :value="null" v-else :disabled="true">
                             <div class="ep-select-empty">无数据</div>
                         </el-option>
                     </el-tab-pane>
@@ -35,7 +35,7 @@
                         <ep-render v-if="item.render" :render="item.render"></ep-render>
                     </el-option>
                 </div>
-                <el-option v-else :disabled="true">
+                <el-option :value="null" v-else :disabled="true">
                     <div class="ep-select-empty">无数据</div>
                 </el-option>
             </div>
