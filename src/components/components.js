@@ -1,6 +1,6 @@
 import EPRender from './render';
 import EPTable from './table';
-import EPSelect from './select';
+import EPSelect from './select.vue';
 
 export default {
     install(Vue) {
