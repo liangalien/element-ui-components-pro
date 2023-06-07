@@ -1,19 +1,20 @@
 <template>
     <div class="ep-select">
-        <el-select
+        <base-select
                 v-bind="{loading: loading, 'remote-method': searchChange, filterable: true, remote: true, ...$attrs}"
                 v-on="{'visible-change': visibleChange, ...$listeners}"
                 :style="{width: $attrs.width}"
                 ref="ep-select"
-                v-model="value"
+                :value="value"
+                @change="onChange"
         >
             <div>
                 <el-tabs v-if="tabs" :value="tabActiveName" type="card" @tab-click="onTabClick">
                     <el-tab-pane v-for="tab in tabs" :name="tab.name" :label="tab.label">
                         <div v-if="options.length > 0">
                             <el-option
-                                    v-for="item in options"
-                                    :key="item.value"
+                                    v-for="(item, index) in options"
+                                    :key="index"
                                     :value="item.value"
                                     :label="item.label"
                             >
@@ -27,8 +28,8 @@
                 </el-tabs>
                 <div v-else-if="options.length > 0">
                     <el-option
-                            v-for="item in options"
-                            :key="item.value"
+                            v-for="(item, index) in options"
+                            :key="index"
                             :value="item.value"
                             :label="item.label"
                     >
@@ -40,14 +41,16 @@
                 </el-option>
             </div>
 
-        </el-select>
+        </base-select>
     </div>
 </template>
 
 <script>
     import Http from '../utils/http';
+    import BaseSelect from './select.js';
 
     export default {
+        components: {BaseSelect},
         inheritAttrs: false,
         props: {
             request: [Object, Function],
@@ -64,11 +67,11 @@
             },
             searchField: {type: [String, Boolean], default: "search"},
             tabs: Array,
-            tabActiveName: [String]
+            tabActiveName: [String],
+            value: true
         },
         data() {
             return {
-                value: null,
                 loading: false,
                 options: [],
                 search: null,
@@ -123,6 +126,9 @@
             }
         },
         methods: {
+            onChange(val) {
+                this.$emit("input", val);
+            },
             visibleChange: function(visible) {
                 if (visible) {
                     this.pagination.pageNo = 1;
@@ -163,26 +169,6 @@
 
                 let scroll = document.querySelector(".el-select-dropdown:has(.el-tabs) .el-scrollbar__wrap");
                 scroll.scrollTop = 0; //滚动到顶部
-            },
-            getCurSelected() {
-                let selected = this.$refs["ep-select"].selected;
-                if (selected) {
-                    if (selected instanceof Array) {
-                        return selected.map(s => {
-                            return {
-                                value: s.value,
-                                label: s.label
-                            }
-                        })
-                    } else {
-                        return {
-                            value: selected.value,
-                            label: selected.label
-                        }
-                    }
-                } else {
-                    return null;
-                }
             },
             getOption: function () {
                 var options = {
@@ -237,4 +223,14 @@
         border-left: none !important;
     }
 
+    .ep-select .el-select--medium .el-select__tags .el-tag {
+        height: 28px;
+        color: #666666;
+        font-size: 14px;
+    }
+
+    .ep-select .el-select__tags .el-icon-close {
+        transform: none;
+        background-color: transparent;
+    }
 </style>
