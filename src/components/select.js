@@ -33,6 +33,8 @@ export default {
                 this.value.forEach(value => {
                     if (value instanceof Object) {
                         value.currentLabel = value.label;
+                    } else {
+                        value = this.getOption(value);
                     }
 
                     result.push(value);
