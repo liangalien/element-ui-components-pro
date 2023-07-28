@@ -10,7 +10,7 @@
         >
             <div>
                 <el-tabs v-if="tabs" :value="tabActiveName" type="card" @tab-click="onTabClick">
-                    <el-tab-pane v-for="tab in tabs" :name="tab.name" :label="tab.label">
+                    <el-tab-pane v-for="tab in tabs" :key="tab.name" :name="tab.name" :label="tab.label">
                         <div v-if="options.length > 0">
                             <el-option
                                     v-for="(item, index) in options"
