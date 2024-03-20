@@ -22,7 +22,9 @@
                             </el-option>
                         </div>
                         <el-option :value="null" v-else :disabled="true">
-                            <div class="ep-select-empty">无数据</div>
+                            <slot name="empty">
+                                <div class="ep-select-empty">无数据</div>
+                            </slot>
                         </el-option>
                     </el-tab-pane>
                 </el-tabs>
@@ -37,7 +39,9 @@
                     </el-option>
                 </div>
                 <el-option :value="null" v-else :disabled="true">
-                    <div class="ep-select-empty">无数据</div>
+                    <slot name="empty">
+                        <div class="ep-select-empty">无数据</div>
+                    </slot>
                 </el-option>
             </div>
 

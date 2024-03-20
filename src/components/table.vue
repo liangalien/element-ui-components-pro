@@ -17,6 +17,7 @@
                            @click="getTableData()"></el-button>
                 <el-popover
                         trigger="click"
+                        v-if="extra && extra.indexOf('option') != -1"
                 >
                     <el-checkbox
                             v-model="columnsCheckedAll"
@@ -67,7 +68,7 @@
             </template>
         </el-table>
 
-        <div class="table-bottom-right">
+        <div v-if="pagination" class="table-bottom-right">
             <el-pagination
                     background
                     :layout="pagination.layout"
@@ -90,11 +91,12 @@
         name: "EpTable",
         inheritAttrs: false,
         props: {
+            data: Array,
             request: [Object, Function],
             responseFormat: Function,
             columns: Array,
             pagination: {
-                type: Object,
+                type: [Object, Boolean],
                 default() {
                     return {
                         total: 0,
@@ -111,7 +113,7 @@
                 }
             },
             extra: {
-                type: Array, default() {
+                type: [Array, Boolean], default() {
                     return ["refresh", "columns"]
                 }
             },
@@ -124,7 +126,7 @@
         },
         data() {
             return {
-                tableData: [],
+                tableData: this.data,
                 loading: false,
                 search: null,
                 sortBy: null,
