@@ -2,6 +2,7 @@
     <div class="ep-table">
         <div class="table-top">
             <div class="table-top-left">
+                <slot name="topLeftBefore"></slot>
                 <el-input
                         v-if="searchField != false"
                         placeholder="关键字查询"
