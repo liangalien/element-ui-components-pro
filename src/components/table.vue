@@ -4,6 +4,7 @@
             <div class="table-top-left">
                 <slot name="topLeftBefore"></slot>
                 <el-input
+                        :size="size"
                         v-if="searchField != false"
                         placeholder="关键字查询"
                         v-model="search">
@@ -91,6 +92,7 @@
         name: "EpTable",
         inheritAttrs: false,
         props: {
+            size: String,
             request: [Object, Function],
             responseFormat: Function,
             columns: Array,

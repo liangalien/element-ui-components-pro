@@ -2,11 +2,11 @@
   "name": "element-ui-components-pro",
   "description": "基于element-ui，封装一些常用的组件，比如分页表格、分页下拉框，以到达开箱即用的目的",
   "author": {
-    "name": "shiqiangliang",
+    "name": "liangalien",
     "url": "https://github.com/liangalien"
   },
   "homepage": "https://github.com/liangalien/element-ui-components-pro",
-  "version": "1.1.7",
+  "version": "1.1.8",
   "private": false,
   "main": "src/components/components.js",
   "scripts": {
@@ -16,7 +16,7 @@
     "axios": "^1.3.4",
     "babel-preset-es2015": "^6.24.1",
     "element-ui": "^2.3.4",
-    "vue": "^2.5.16",
+    "vue": "^2.7.16",
     "vue-router": "^3.6.5"
   },
   "engines": {
@@ -37,7 +37,7 @@
     "style-loader": "^0.13.2",
     "url-loader": "^0.5.8",
     "vue-loader": "^13.3.0",
-    "vue-template-compiler": "^2.5.16",
+    "vue-template-compiler": "^2.7.16",
     "webpack": "^2.4.1",
     "webpack-dev-server": "^2.4.2"
   }

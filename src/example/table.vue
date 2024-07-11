@@ -1,11 +1,12 @@
 <template>
     <ep-table
+        size="small"
         :columns="columns"
         :request="request"
         :responseFormat="responseFormat"
     >
         <template #topLeft>
-            <el-button type="primary">上传</el-button>
+            <el-button size="small" type="primary">上传</el-button>
         </template>
     </ep-table>
 </template>
