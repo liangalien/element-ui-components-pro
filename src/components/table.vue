@@ -5,6 +5,7 @@
                 <slot name="topLeftBefore"></slot>
                 <el-input
                         :size="size"
+                        clearable
                         v-if="searchField != false"
                         placeholder="关键字查询"
                         v-model="search">
