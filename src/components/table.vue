@@ -8,7 +8,8 @@
                         clearable
                         v-if="searchField != false"
                         placeholder="关键字查询"
-                        v-model="search">
+                        v-model="search"
+                >
                     <i slot="prefix" class="el-input__icon el-icon-search"></i>
                 </el-input>
                 <slot name="topLeft"></slot>
@@ -17,7 +18,8 @@
             <div class="table-top-right">
                 <slot name="topRight"></slot>
                 <el-button v-if="extra && extra.indexOf('refresh') != -1" type="text" icon="el-icon-refresh-left"
-                           @click="getTableData()"></el-button>
+                           @click="getTableData()"
+                ></el-button>
                 <el-popover
                         trigger="click"
                 >
@@ -33,12 +35,13 @@
                             @change="columnsCheckChange"
                     >
                         <div v-for="column in columnsCur" v-if="column.prop">
-                            <el-checkbox :label="column.prop" :key="column.prop">{{column.label}}</el-checkbox>
+                            <el-checkbox :label="column.prop" :key="column.prop">{{ column.label }}</el-checkbox>
                         </div>
 
                     </el-checkbox-group>
                     <el-button v-if="extra && extra.indexOf('columns') != -1" slot="reference" type="text"
-                               icon="el-icon-setting"></el-button>
+                               icon="el-icon-setting"
+                    ></el-button>
                 </el-popover>
             </div>
         </div>
@@ -51,27 +54,12 @@
                 @sort-change="sortChange"
                 style="width: 100%"
         >
-            <template v-for="item in columnsCur" v-if="item.show != false">
-                <el-table-column
-                        v-if="item.render"
-                        v-bind="{sortable: (item.sortable ? 'custom' : false), key: item.prop, ...item}"
-                        :class-name="item.ellipsis && 'cell-ellipsis'"
-                >
-                    <template slot-scope="scope">
-                        <ep-render :scope="scope" :row="scope.row" :render="item.render"
-                                   :value="scope.row[item.prop]"></ep-render>
-                    </template>
-                </el-table-column>
-                <el-table-column
-                        v-else
-                        v-bind="{sortable: (item.sortable ? 'custom' : false), key: item.prop, ...item}"
-                        :class-name="item.ellipsis && 'cell-ellipsis'"
-                ></el-table-column>
-            </template>
+            <ep-table-column v-for="(column, idx) in columns"  :key="idx" :column="column"/>
         </el-table>
 
         <div class="table-bottom-right">
             <el-pagination
+                    v-if="pagination"
                     background
                     :layout="pagination.layout"
                     :current-page="pagination.pageNo"
@@ -88,35 +76,36 @@
 
 <script>
     import Http from '../utils/http';
-
+    import EpTableColumn from './tableColumn';
     export default {
-        name: "EpTable",
+        name: 'EpTable',
         inheritAttrs: false,
+        components: {EpTableColumn},
         props: {
             size: String,
             request: [Object, Function],
             responseFormat: Function,
             columns: Array,
             pagination: {
-                type: Object,
+                type: [Object, Boolean],
                 default() {
                     return {
                         total: 0,
                         pageSize: 10,
                         pageSizes: [10, 50, 100, 200],
                         pageNo: 1,
-                        layout: "total, prev, pager, next, sizes"
-                    }
+                        layout: 'total, prev, pager, next, sizes'
+                    };
                 }
             },
             searchField: {
                 type: [String, Boolean], default() {
-                    return "search"
+                    return 'search';
                 }
             },
             extra: {
-                type: Array, default() {
-                    return ["refresh", "columns"]
+                type: [Array, Boolean], default() {
+                    return ['refresh', 'columns'];
                 }
             },
             autoLoading: {
@@ -124,11 +113,12 @@
                 default() {
                     return true;
                 }
-            }
+            },
+            data: Array
         },
         data() {
             return {
-                tableData: [],
+                tableData: this.data || [],
                 loading: false,
                 search: null,
                 sortBy: null,
@@ -137,7 +127,7 @@
                 columnsChecked: [],
                 columnsCheckedAll: true,
                 columnsCheckedIndeterminate: false
-            }
+            };
         },
         methods: {
             getTableData: function() {
@@ -148,15 +138,13 @@
                             this.tableData = resp.rows;
                             this.pagination.total = resp.total == undefined && resp.rows.length || resp.total || 0;
                         } else {
-                            var {rows, total} = this.responseFormat(resp);
+                            var { rows, total } = this.responseFormat(resp);
                             this.tableData = rows;
                             this.pagination.total = total;
                         }
                         this.loading = false;
                     });
-                }
-
-                else if (this.request instanceof Object) {
+                } else if (this.request instanceof Object) {
                     var url = this.request.url;
                     var method = this.request.method;
                     var params = this.request.params;
@@ -165,8 +153,11 @@
                     //自带属性，如翻页、排序、搜索放在哪个字段（params/data）。
                     var optionField = this.request.optionField;
 
-                    if (optionField == "data" || (!optionField && (method || "GET").toUpperCase() == "POST")) data = {...this.getOption(), ...data};
-                    else params = {...this.getOption(), ...params};
+                    if (optionField == 'data' || (!optionField && (method || 'GET').toUpperCase() == 'POST')) {
+                        data = { ...this.getOption(), ...data };
+                    } else {
+                        params = { ...this.getOption(), ...params };
+                    }
 
                     this.loading = true;
                     Http.easyRequest(url, method, params, data,
@@ -175,7 +166,7 @@
                                 this.tableData = final.rows;
                                 this.pagination.total = final.total == undefined && final.rows.length || final.total || 0;
                             } else {
-                                var {rows, total} = this.responseFormat(final);
+                                var { rows, total } = this.responseFormat(final);
                                 this.tableData = rows;
                                 this.pagination.total = total;
                             }
@@ -183,22 +174,25 @@
                         });
                 }
             },
-            refresh: function () { //刷新，供父组件调用
+            refresh: function() { //刷新，供父组件调用
                 this.getTableData();
             },
-            reset: function () { //重置，从第一页开始显示
+            reset: function() { //重置，从第一页开始显示
                 this.pagination.pageNo = 1;
                 this.pagination.total = 0;
                 this.refresh();
             },
-            getOption: function () {
+            getOption: function() {
                 var options = {
                     pageNo: this.pagination.pageNo,
                     pageSize: this.pagination.pageSize,
                     sortBy: this.sortBy
+                };
+                if (this.searchField != false) {
+                    options[this.searchField] = this.search;
+                } else {
+                    options = { ...options, ...this.search };
                 }
-                if (this.searchField != false) options[this.searchField] = this.search;
-                else options = {...options, ...this.search}
                 return options;
             },
             pageChange: function(pageNo) {
@@ -210,8 +204,8 @@
                 this.getTableData();
             },
             sortChange: function(sortable) {
-                var sortBy = {[sortable.prop]: sortable.order};
-                this.sortBy = (this.request.method == "GET" || !this.request.method) && JSON.stringify(sortBy) || sortBy;
+                var sortBy = { [sortable.prop]: sortable.order };
+                this.sortBy = (this.request.method == 'GET' || !this.request.method) && JSON.stringify(sortBy) || sortBy;
                 this.getTableData();
             },
             columnsCheckAllChange(val) {
@@ -230,7 +224,7 @@
 
                 this.setColumnShow();
             },
-            setColumnShow: function (value=null) {
+            setColumnShow: function(value = null) {
                 this.columnsCur = this.columnsCur.map(column => {
                     return {
                         ...column,
@@ -248,11 +242,14 @@
             if (this.autoLoading) this.getTableData();
         },
         watch: {
-            search: function () {
+            search: function() {
                 if (this.searchField != false) this.getTableData();
             },
+            data(val) {
+                this.tableData = val;
+            }
         }
-    }
+    };
 </script>
 
 <style>
