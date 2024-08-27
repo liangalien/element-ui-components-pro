@@ -48,7 +48,6 @@
                     {
                         prop: "status",
                         label: "状态",
-                        width: "大小",
                         width: "150",
                         sortable: true,
                         render: (h, {value}) => {

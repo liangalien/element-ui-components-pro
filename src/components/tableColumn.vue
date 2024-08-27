@@ -3,14 +3,14 @@
                      v-bind="{sortable: (column.sortable ? 'custom' : false), ...column}"
                      :class-name="column.ellipsis && 'cell-ellipsis'"
     >
-        <template slot-scope="scope">
+        <template v-slot="scope" v-if="column.render">
             <ep-render :row="scope.row" :scope="scope" :render="column.render"
                        :value="scope.row[column.prop]"
             />
         </template>
 
-        <template slot="header" slot-scope="scope">
-            <ep-render :render="column.header || column.label"/>
+        <template slot="header" v-if="column.header">
+            <ep-render :render="column.header"/>
         </template>
 
         <template v-if="column.children">
