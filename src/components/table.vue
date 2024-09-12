@@ -54,7 +54,7 @@
                 @sort-change="sortChange"
                 style="width: 100%"
         >
-            <ep-table-column v-for="(column, idx) in columns"  :key="idx" :column="column"/>
+            <ep-table-column v-for="(column, idx) in columns"  :key="idx" :column="column" ref="column"/>
         </el-table>
 
         <div class="table-bottom-right">
@@ -231,7 +231,21 @@
                         show: value == null ? this.columnsChecked.indexOf(column.prop) != -1 : value
                     };
                 });
-            }
+            },
+            getColumnRefs() {
+                const handle = (column) => {
+                    let refs = {};
+                    column.map(c => {
+                        if (c.$refs.child) {
+                            refs = {...refs, ...handle(c.$refs.child)};
+                            delete c.$refs.child;
+                        }
+                        refs = {...refs, ...c.$refs};
+                    });
+                    return refs;
+                };
+                return handle(this.$refs.column);
+            },
         },
         mounted() {
             this.columnsCur = this.columns;
@@ -240,6 +254,10 @@
 
             this.columnsCheckedAll = this.columnsAll.length === this.columnsChecked.length;
             if (this.autoLoading) this.getTableData();
+
+            setTimeout(() => { // 列中如何使用render，把render里的$refs也弄上来，修复在render中使用el-popover异常的问题
+                this.$refs = {...this.$refs, ...this.getColumnRefs()};
+            }, 1000);
         },
         watch: {
             search: function() {

@@ -14,7 +14,7 @@
         </template>
 
         <template v-if="column.children">
-            <ep-table-column v-for="(child, idx) in column.children" :key="idx" :column="child"/>
+            <ep-table-column v-for="(child, idx) in column.children" :key="idx" :column="child" ref="child"/>
         </template>
     </el-table-column>
 </template>
@@ -24,7 +24,7 @@
         name: "EpTableColumn",
         props: {
             column: Object
-        }
+        },
     }
 </script>
 
